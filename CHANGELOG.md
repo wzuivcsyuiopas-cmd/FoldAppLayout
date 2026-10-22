@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.3 — 2026-10-22 (experimental)
+
+- Adds a version-guarded native watch-scene/two-column adapter for YouTube 21.42.243 (1561304941).
+- Enables video-left / recommendations-or-comments-right on the inner portrait screen at real 600dp+ widths; keeps actual density, rotation and window measurements unchanged.
+- Retains the original scene exclusion and custom player-height conditions. Recommendation headers may contain duplicate channel metadata; this remains experimental.
+- Does not include the unsuccessful global size-bucket/aspect-classification experiments or diagnostic hooks.
+
 ## 2.0.2 — 2026-10-22 (experimental)
 
 - Adds a version-guarded adapter for Mihon 0.21.2 (38), whose custom/inlined tablet UI checks are outside the generic WindowSizeClass scanner.

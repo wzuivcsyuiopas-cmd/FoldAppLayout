@@ -69,6 +69,34 @@ final class HookEngine {
                 }
             } catch (Throwable error) { XposedBridge.log("FoldAppLayout: Mihon adapter skipped: " + error); }
         }
+        if (lp.packageName.equals("com.google.android.youtube")) {
+            try {
+                if (context.getPackageManager().getPackageInfo(lp.packageName, 0).getLongVersionCode() == 1561304941L) {
+                    Class<?> split = resolve("Lrag;", lp.classLoader);
+                    // This build has a separate watch-scene classifier; its native two-column scene is 2.
+                    XposedHelpers.findAndHookMethod("rbo", lp.classLoader, "a", Object.class, Object.class, new XC_MethodHook() {
+                        @Override protected void afterHookedMethod(MethodHookParam p) {
+                            if (!state.enabled || p.hasThrowable() || XposedHelpers.getIntField(p.thisObject, "$cid") != 4
+                                    || !(p.args[0] instanceof Context) || !Boolean.FALSE.equals(p.args[1])) return;
+                            android.content.res.Configuration c = ((Context) p.args[0]).getResources().getConfiguration();
+                            if (c.smallestScreenWidthDp >= Settings.THRESHOLD && c.screenWidthDp >= Settings.THRESHOLD)
+                                p.setResult(Integer.valueOf(2));
+                        }
+                    });
+                    // Relax only the native split layout predicate; keep its custom-height exclusion.
+                    XposedHelpers.findAndHookMethod(split, "c", new XC_MethodHook() {
+                        @Override protected void afterHookedMethod(MethodHookParam p) {
+                            if (!state.enabled || p.hasThrowable()) return;
+                            Context window = (Context) XposedHelpers.getObjectField(p.thisObject, "k");
+                            android.content.res.Configuration c = window.getResources().getConfiguration();
+                            if (c.smallestScreenWidthDp >= Settings.THRESHOLD && c.screenWidthDp >= Settings.THRESHOLD
+                                    && XposedHelpers.getIntField(p.thisObject, "i") <= 0) p.setResult(true);
+                        }
+                    });
+                    rules += 2;
+                }
+            } catch (Throwable error) { XposedBridge.log("FoldAppLayout: YouTube adapter skipped: " + error); }
+        }
         XposedBridge.log("FoldAppLayout: " + lp.packageName + " matched " + rules + " rules; DPI unchanged");
         return rules;
     }

@@ -19,6 +19,7 @@ Fresh installs select nothing. Framework scope authorizes injection; the module 
 
 - Semantic discovery of newer AndroidX WindowSizeClass, including R8-renamed classes that retain the expected toString marker. It promotes width classes in the 600–839 range to expanded (840), preserving height and posture.
 - Named dimension resources: min_window_width_for_expanded_window_size_class → 600dp.
+- A version-guarded YouTube 21.42.243 (1561304941) watch adapter relaxes its native scene/split-layout portrait restriction on wide windows. The video stays on the left and recommendations/comments can appear on the right, without rotating or resizing the actual window. This is app-specific behavior, not a generic 840dp override. The recommendation pane may retain duplicate channel metadata.
 - A version-guarded Mihon 0.21.2 (38) adapter reads the current Compose window configuration and enables its tablet UI predicate when both current and smallest widths reach 600dp. While enabled, the module width rule takes priority without changing Mihon preferences. It does not promise reader dual-page mode or all custom layouts.
 - A version-guarded Flare 1.7.8 (5653) grid adapter reduces minimum column width from 320dp to 280dp.
 

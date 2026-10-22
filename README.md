@@ -25,7 +25,8 @@
 - 按资源名称调整 `min_window_width_for_expanded_window_size_class` 为 600dp。
 - Flare 1.7.8（versionCode 5653）有独立时间线网格适配：最小列宽 320dp → 280dp，使当前内屏竖屏容得下双列。其他 Flare 版本不会套用这条专用规则。
 - Mihon 0.21.2（versionCode 38）有独立平板判定适配：读取 Compose 当前窗口的真实配置，将其平板界面入口提前到 600dp。当前宽度和最小宽度均须达到 600dp，因此窄窗口与外屏不会仅因设备型号被强制视为平板。启用该规则时以模块宽度判断为准；不改变 Mihon 自己的设置值。
-- 当前验证：Mihon 0.21.2 的内屏首页平板导航；Claude 1.260923.20 使用通用分类识别，Gmail 2026.10.05.998732664.Release 使用资源规则，Flare 1.7.8 使用通用规则与网格适配。
+- YouTube 21.42.243（versionCode 1561304941）有独立播放页适配：宽窗口中放宽其播放场景与原生分栏布局的竖屏限制，使内屏竖屏可显示左侧视频、右侧推荐/评论。保留其原有场景排除条件。不是统一的 840dp 修改，不调整实际方向或尺寸。
+- 当前验证：YouTube 21.42.243 的内屏竖屏推荐/评论分栏；Mihon 0.21.2 的内屏首页平板导航；Claude 1.260923.20 使用通用分类识别，Gmail 2026.10.05.998732664.Release 使用资源规则，Flare 1.7.8 使用通用规则与网格适配。
 
 不覆盖任意硬编码判断、旧版 Compose 内联分类、WebView/CSS 断点、服务端开关或根本没有大屏布局的应用。低于 600dp 的标准宽度分类不提升；资源规则也按实际窗口宽度判断。这里的 600dp 是可用窗口宽度标准，不是铰链传感器判断：分屏窗口和其他设备同样按窗口大小生效。
 
@@ -55,4 +56,4 @@ export ANDROID_SDK_ROOT=/path/to/Android/sdk
 
 保留 `local.codex.applayout` 包名以兼容现有安装；本项目不是 OpenAI / Codex 官方产品。当前采用直接调用 Android 官方构建工具的轻量脚本，暂无 Gradle 工程；Android Studio 用户可导入源码阅读，通过脚本构建。
 
-GitHub Actions 的 APK 使用临时测试签名，不能覆盖安装正式 Release。正式 APK 保持同一发布签名，私钥不进入仓库或 CI。启动时需要读取配置并扫描布局类，冷启动可能有额外耗时。2.0.2 已在当前手机验证配置读取及 Mihon 内屏导航布局，其他页面与阅读器双页能力不作保证，详见 [VALIDATION.md](VALIDATION.md)。
+GitHub Actions 的 APK 使用临时测试签名，不能覆盖安装正式 Release。正式 APK 保持同一发布签名，私钥不进入仓库或 CI。启动时需要读取配置并扫描布局类，冷启动可能有额外耗时。2.0.3 已在当前手机验证 YouTube 内屏竖屏分栏，并保留 Mihon 适配；YouTube 推荐区可能保留重复频道元信息，其他版本、页面和阅读器双页能力不作保证，详见 [VALIDATION.md](VALIDATION.md)。
