@@ -6,7 +6,7 @@ An experimental Xposed module that lets selected apps enter their existing large
 
 ## Requirements and use
 
-Android 14+, with a compatible Vector / LSPosed legacy Xposed API framework. Version 2.0 was tested on MIX Fold 2, LineageOS 24 / Android 17 and Vector 2.2. Other combinations are unverified; the 2.0.1 broadcast hardening has not yet been retested on-device.
+Android 14+, with a compatible Vector / LSPosed legacy Xposed API framework. Version 2.0 was tested on MIX Fold 2, LineageOS 24 / Android 17 and Vector 2.2. Other combinations are unverified. Version 2.0.2 also validates configuration delivery and the Mihon inner-screen navigation adapter on this device.
 
 1. Install the release APK and enable the module in your framework.
 2. Authorize your target apps in framework scope.
@@ -19,6 +19,7 @@ Fresh installs select nothing. Framework scope authorizes injection; the module 
 
 - Semantic discovery of newer AndroidX WindowSizeClass, including R8-renamed classes that retain the expected toString marker. It promotes width classes in the 600–839 range to expanded (840), preserving height and posture.
 - Named dimension resources: min_window_width_for_expanded_window_size_class → 600dp.
+- A version-guarded Mihon 0.21.2 (38) adapter reads the current Compose window configuration and enables its tablet UI predicate when both current and smallest widths reach 600dp. While enabled, the module width rule takes priority without changing Mihon preferences. It does not promise reader dual-page mode or all custom layouts.
 - A version-guarded Flare 1.7.8 (5653) grid adapter reduces minimum column width from 320dp to 280dp.
 
 An app must already have a large-screen UI. Arbitrary custom breakpoints, old inlined Compose classifiers, WebViews, server-side switches and dynamically loaded code are not universally covered. This is window-width based, not hinge detection: narrow split-screen windows retain their normal standard width class. Flare has a separate grid adapter.

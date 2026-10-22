@@ -45,6 +45,30 @@ final class HookEngine {
                 }
             } catch (Throwable error) { XposedBridge.log("FoldAppLayout: Flare adapter skipped: " + error); }
         }
+        if (lp.packageName.equals("app.mihon")) {
+            try {
+                if (context.getPackageManager().getPackageInfo(lp.packageName, 0).getLongVersionCode() == 38) {
+                    Class<?> composer = resolve("Landroidx/compose/runtime/Composer;", lp.classLoader);
+                    Class<?> gapComposer = resolve("Landroidx/compose/runtime/GapComposer;", lp.classLoader);
+                    Class<?> local = resolve("Landroidx/compose/runtime/ProvidableCompositionLocal;", lp.classLoader);
+                    Method consume = gapComposer.getDeclaredMethod("consume", local);
+                    Object configurationLocal = XposedHelpers.getStaticObjectField(
+                            resolve("Landroidx/compose/ui/platform/AndroidCompositionLocals_androidKt;", lp.classLoader), "LocalConfiguration");
+                    XposedHelpers.findAndHookMethod("eu.kanade.presentation.util.WindowSizeKt", lp.classLoader,
+                            "isTabletUi", composer, new XC_MethodHook() {
+                                @Override protected void afterHookedMethod(MethodHookParam p) throws Throwable {
+                                    if (!state.enabled || p.hasThrowable()) return;
+                                    // Read the real Compose window configuration without altering its dimensions.
+                                    android.content.res.Configuration configuration = (android.content.res.Configuration)
+                                            consume.invoke(p.args[0], configurationLocal);
+                                    p.setResult(configuration.smallestScreenWidthDp >= Settings.THRESHOLD
+                                            && configuration.screenWidthDp >= Settings.THRESHOLD);
+                                }
+                            });
+                    rules++;
+                }
+            } catch (Throwable error) { XposedBridge.log("FoldAppLayout: Mihon adapter skipped: " + error); }
+        }
         XposedBridge.log("FoldAppLayout: " + lp.packageName + " matched " + rules + " rules; DPI unchanged");
         return rules;
     }
