@@ -22,6 +22,8 @@
 ## 支持范围
 
 - 识别新版 AndroidX `WindowSizeClass(minWidthDp=…, minHeightDp=…)`，包括保留这一语义标记的 R8 混淆版本。将原本 600–839 档的宽度分类提升为 840，保留高度与折叠姿态。
+- 通用工厂识别同时覆盖数值参数、`Context` 和 Compose `Composer` 入口，减少应用直接从当前窗口生成分类时的漏判。
+- Bilibili 普通版 9.16.1（versionCode 9161100）有独立播放页适配：在真实宽度和最小宽度均达到 600dp 时，放宽其原生大屏布局判断，使内屏竖屏显示左侧视频、右侧简介/推荐。保留应用自身的播放页功能开关，不修改 APK 或全局设备分类。
 - 按资源名称调整 `min_window_width_for_expanded_window_size_class` 为 600dp。
 - Flare 1.7.8（versionCode 5653）有独立时间线网格适配：最小列宽 320dp → 280dp，使当前内屏竖屏容得下双列。其他 Flare 版本不会套用这条专用规则。
 - Mihon 0.21.2（versionCode 38）有独立平板判定适配：读取 Compose 当前窗口的真实配置，将其平板界面入口提前到 600dp。当前宽度和最小宽度均须达到 600dp，因此窄窗口与外屏不会仅因设备型号被强制视为平板。启用该规则时以模块宽度判断为准；不改变 Mihon 自己的设置值。
@@ -56,4 +58,4 @@ export ANDROID_SDK_ROOT=/path/to/Android/sdk
 
 保留 `local.codex.applayout` 包名以兼容现有安装；本项目不是 OpenAI / Codex 官方产品。当前采用直接调用 Android 官方构建工具的轻量脚本，暂无 Gradle 工程；Android Studio 用户可导入源码阅读，通过脚本构建。
 
-GitHub Actions 的 APK 使用临时测试签名，不能覆盖安装正式 Release。正式 APK 保持同一发布签名，私钥不进入仓库或 CI。启动时需要读取配置并扫描布局类，冷启动可能有额外耗时。2.0.3 已在当前手机验证 YouTube 内屏竖屏分栏，并保留 Mihon 适配；YouTube 推荐区可能保留重复频道元信息，其他版本、页面和阅读器双页能力不作保证，详见 [VALIDATION.md](VALIDATION.md)。
+GitHub Actions 的 APK 使用临时测试签名，不能覆盖安装正式 Release。正式 APK 保持同一发布签名，私钥不进入仓库或 CI。启动时需要读取配置并扫描布局类，冷启动可能有额外耗时。应用逐项检查与限制见 [COMPATIBILITY.md](COMPATIBILITY.md)。2.1.0 新增 Bilibili 内屏播放页和 Context/Compose 工厂支持；已在当前手机验证 YouTube 内屏竖屏分栏，并保留 Mihon 适配；YouTube 推荐区可能保留重复频道元信息，其他版本、页面和阅读器双页能力不作保证，详见 [VALIDATION.md](VALIDATION.md)。

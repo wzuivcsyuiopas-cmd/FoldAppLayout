@@ -5,6 +5,10 @@ public final class ScannerTest {
         DexLayoutScanner.Plan plan = DexLayoutScanner.scan(new String[]{args[0]});
         require(plan.classes.size() == 1 && plan.classes.contains("Lprobe/ObfuscatedWindow;"), "semantic class discovery");
         require(plan.sites.stream().anyMatch(s -> s.name.equals("classify")), "width factory discovery");
+        require(plan.sites.stream().anyMatch(s -> s.name.equals("fromWindow") && s.args.contains("Landroid/content/Context;")), "context factory discovery");
+        require(HookEngine.isLayoutFactory(new Class<?>[]{android.content.Context.class}), "context factory support");
+        require(HookEngine.isLayoutFactory(new Class<?>[]{float.class, float.class}), "numeric factory support");
+        require(!HookEngine.isLayoutFactory(new Class<?>[]{String.class}), "unrelated factory exclusion");
         require(plan.sites.stream().anyMatch(s -> s.name.equals("<init>") && s.owner.endsWith("$Wrapper;")), "adaptive wrapper discovery");
         HookEngine.WidthClass adapter = new HookEngine.WidthClass(probe.ObfuscatedWindow.class);
         for (int width : new int[]{0, 393, 599, 600, 697, 839, 840, 1200}) {

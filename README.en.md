@@ -18,6 +18,8 @@ Fresh installs select nothing. Framework scope authorizes injection; the module 
 ## What it supports
 
 - Semantic discovery of newer AndroidX WindowSizeClass, including R8-renamed classes that retain the expected toString marker. It promotes width classes in the 600–839 range to expanded (840), preserving height and posture.
+- Factory detection includes numeric, Context and Compose Composer entry points.
+- A version-guarded Bilibili 9.16.1 (9161100) adapter relaxes its native large-screen player predicate on real windows with both current and smallest widths of at least 600dp. It preserves the separate app feature gate and enables video-left / details-and-recommendations-right without changing global device classification.
 - Named dimension resources: min_window_width_for_expanded_window_size_class → 600dp.
 - A version-guarded YouTube 21.42.243 (1561304941) watch adapter relaxes its native scene/split-layout portrait restriction on wide windows. The video stays on the left and recommendations/comments can appear on the right, without rotating or resizing the actual window. This is app-specific behavior, not a generic 840dp override. The recommendation pane may retain duplicate channel metadata.
 - A version-guarded Mihon 0.21.2 (38) adapter reads the current Compose window configuration and enables its tablet UI predicate when both current and smallest widths reach 600dp. While enabled, the module width rule takes priority without changing Mihon preferences. It does not promise reader dual-page mode or all custom layouts.
@@ -36,6 +38,6 @@ Install JDK 17+, Python 3, curl, Android SDK Platform 36 and Build Tools 36.0.0.
 
 Output: build/FoldAppLayout.apk. These scripts directly use official Android SDK tools; no Gradle project is included. The Xposed API jar is compile-only and hash-checked. Default builds generate a local test key in ignored build/. Set SIGNING_KEY and SIGNING_PASSWORD to use your own persistent key. CI uses disposable keys and cannot update official release builds.
 
-Tests cover semantic DEX discovery and width/height boundaries, not real framework injection. See [VALIDATION.md](VALIDATION.md) for evidence and limits, [SECURITY.md](SECURITY.md) for privacy and startup overhead, and [CONTRIBUTING.md](CONTRIBUTING.md) for contributions.
+Tests cover semantic DEX discovery and width/height boundaries, not real framework injection. See [COMPATIBILITY.md](COMPATIBILITY.md) for the first app-by-app audit and [VALIDATION.md](VALIDATION.md) for evidence and limits, [SECURITY.md](SECURITY.md) for privacy and startup overhead, and [CONTRIBUTING.md](CONTRIBUTING.md) for contributions.
 
 No target APKs, decompiled app code, device backups or private signing keys are distributed. See [third-party notices](THIRD_PARTY_NOTICES.md). The existing package ID local.codex.applayout is retained for update compatibility; this is not an official OpenAI / Codex product.

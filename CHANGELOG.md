@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.0 — 2026-10-22 (experimental)
+
+- Extends semantic WindowSizeClass factory hooks to Context and Compose Composer entry points.
+- Adds a version-guarded Bilibili 9.16.1 (9161100) native two-pane player adapter, gated on real current/smallest widths and available height of at least 600dp. Leaves the separate app feature gate intact.
+- Audits common apps individually; distinguishes native working pages, verified module behavior, static findings and login/loading limits.
+- Adds Context-factory discovery and filtering tests; keeps real display metrics unchanged.
+
 ## 2.0.3 — 2026-10-22 (experimental)
 
 - Adds a version-guarded native watch-scene/two-column adapter for YouTube 21.42.243 (1561304941).

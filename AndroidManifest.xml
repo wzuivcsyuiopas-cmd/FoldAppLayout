@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.codex.applayout" android:versionCode="6" android:versionName="2.0.3">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.codex.applayout" android:versionCode="7" android:versionName="2.1.0">
     <uses-sdk android:minSdkVersion="34" android:targetSdkVersion="34" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <application android:label="Fold App Layout" android:theme="@style/AppTheme" android:allowBackup="false" android:icon="@android:drawable/ic_menu_view">

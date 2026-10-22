@@ -69,6 +69,27 @@ final class HookEngine {
                 }
             } catch (Throwable error) { XposedBridge.log("FoldAppLayout: Mihon adapter skipped: " + error); }
         }
+        if (lp.packageName.equals("tv.danmaku.bili")) {
+            try {
+                if (context.getPackageManager().getPackageInfo(lp.packageName, 0).getLongVersionCode() == 9161100L) {
+                    Class<?> windowClass = resolve("Landroidx/window/core/layout/WindowSizeClass;", lp.classLoader);
+                    WidthClass window = new WidthClass(windowClass);
+                    XposedHelpers.findAndHookMethod("kntr.common.screen.adjust.KScreenAdjustUtilsKt", lp.classLoader,
+                            "isLargeLandscape", windowClass, new XC_MethodHook() {
+                                @Override protected void afterHookedMethod(MethodHookParam p) throws Throwable {
+                                    if (!state.enabled || p.hasThrowable() || p.args[0] == null) return;
+                                    android.content.res.Configuration c = context.getResources().getConfiguration();
+                                    // The native side-by-side player also requires Bilibili's device-size gate.
+                                    // Relax that layout predicate only inside a real, sufficiently wide window.
+                                    if (c.smallestScreenWidthDp >= Settings.THRESHOLD && c.screenWidthDp >= Settings.THRESHOLD
+                                            && window.width.getInt(p.args[0]) >= Settings.THRESHOLD
+                                            && window.height.getInt(p.args[0]) >= Settings.THRESHOLD) p.setResult(true);
+                                }
+                            });
+                    rules++;
+                }
+            } catch (Throwable error) { XposedBridge.log("FoldAppLayout: Bilibili adapter skipped: " + error); }
+        }
         if (lp.packageName.equals("com.google.android.youtube")) {
             try {
                 if (context.getPackageManager().getPackageInfo(lp.packageName, 0).getLongVersionCode() == 1561304941L) {
@@ -150,8 +171,7 @@ final class HookEngine {
                     }); count++;
                 } else {
                     WidthClass adapter = classes.get(site.result);
-                    long numeric = site.args.stream().filter(a -> a.equals("I") || a.equals("F")).count();
-                    if (adapter == null || numeric < 2) continue;
+                    if (adapter == null || !isLayoutFactory(args)) continue;
                     Method method = owner.getDeclaredMethod(site.name, args); method.setAccessible(true);
                     if (Modifier.isAbstract(method.getModifiers())) continue;
                     XposedBridge.hookMethod(method, new XC_MethodHook() {
@@ -163,6 +183,14 @@ final class HookEngine {
             } catch (ReflectiveOperationException | IllegalArgumentException ignored) {}
         }
         return count;
+    }
+    static boolean isLayoutFactory(Class<?>[] args) {
+        int numeric = 0;
+        for (Class<?> arg : args) {
+            if (arg == int.class || arg == float.class) numeric++;
+            if (Context.class.isAssignableFrom(arg) || arg.getName().equals("androidx.compose.runtime.Composer")) return true;
+        }
+        return numeric >= 2;
     }
     static Class<?> resolve(String d, ClassLoader loader) throws ClassNotFoundException {
         switch (d) {
